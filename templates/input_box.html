@@ -1,0 +1,138 @@
+{%extends 'base.html'%}
+
+{%block title %} input box {%endblock%}
+
+{%block header%} Add new boxes {%endblock%}
+
+{%block body%} 
+<a href="{{ url_for('edit_config', config_id=config_id)}}" class="btn btn-primary">Back</a>
+<a href="{{ url_for('index')}}" class="btn btn-primary">Home</a>
+
+<div style="margin-top: 1rem;">
+    <a href="{{ url_for('generate_boxes', config_id=config_id)}}" class="btn btn-info" title="Open a new page with parameters to encode to generate a new dataset of boxes">Generate dataset</a>
+    <a href="{{ url_for('reset_configuration', config_id=config_id)}}" class="btn btn-info" title="Reset all boxes to 'unplaced' status &#13;&#10;Reset the position of the pallet&#13;&#10;No current box anymore">Reset configuration</a>
+    <a href="{{ url_for('reset_status', config_id=config_id)}}" class="btn btn-info" title="For all boxes, set status to 'virtually placed' if it is currently 'manually placed' &#13;&#10;Does not run the algorithm">Reset status</a>
+    <a href="{{ url_for('boxes_to_run_algo', config_id=config_id)}}" class="btn btn-info" title="Run a 3D packing algorithm with local search&#13;&#10;This might take some time to run">Run 3D packing algorithm</a>
+    <a href="{{ url_for('clear_all_boxes', config_id=config_id)}}" class="btn btn-info" title="Delete all boxes of this configuration from the database" onclick="return confirm('Are you sure you want to clear the boxes of this configuration ?')">Clear all boxes</a>
+    <a href="{{ url_for('report', config_id=config_id)}}" class="btn btn-info" title="Open new page with interesting data about the configuration">Report</a>
+</div>
+
+<div class="card-body">
+    <form action=" {{ url_for('add_box', config_id=config_id) }}" method="POST">
+
+        <div class="row" style="text-align:center">
+            <div class="col">
+                <p>Name</p>
+            </div>
+            <div class="col">
+                <p>Width</p>
+            </div>
+            <div class="col">
+                <p>Depth</p>
+            </div>
+            <div class="col">
+                <p>Height</p>
+            </div>
+            <div class="col">
+                <p>Start x</p>
+            </div>
+            <div class="col">
+                <p>Start y</p>
+            </div>
+            <div class="col">
+                <p>Start z</p>
+            </div>
+            <div class="col">
+                <p>Weight</p>
+            </div>
+          </div>
+
+        <div class="row">
+            <div class="col">
+              <input type="text" class="form-control" placeholder="box name" name="name" required>
+            </div>
+            <div class="col">
+              <input type="text" class="form-control" placeholder="box's width" name="width" required>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" placeholder="box's depth" name="depth" required>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" placeholder="box's height" name="height" required>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" placeholder="box' start x" name="start_x" required>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" placeholder="box' start y" name="start_y" required>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" placeholder="box' start z" name="start_z" required>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" placeholder="box's weight" name="weight" required>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 1.5rem;">
+            <button type="submit" class="btn btn-success" name="submit">Insert</button>
+            <button type="reset" class="btn btn-danger">Cancel</button>
+        </div>
+    </form>
+
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col" style="text-align:center; vertical-align: middle;">No</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">Name</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">Width</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">Depth</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">Height</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">Start Position</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">End Position</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">Weight</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">Status</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for box in boxes %}
+                <tr style="white-space: nowrap; text-align:center;">
+                    <th scope="row" style="vertical-align: middle;">{{ loop.index }}</th>
+                    <td style="vertical-align: middle;">{{ box.name }}</td>
+                    <td style="vertical-align: middle;">{{ box.width }}</td>
+                    <td style="vertical-align: middle;">{{ box.depth }}</td>
+                    <td style="vertical-align: middle;">{{ box.height }}</td>
+                    <td style="vertical-align: middle;">{{ box.get_start_position() }}</td>
+                    <td style="vertical-align: middle;">{{ box.get_end_position() }}</td>
+                    <td style="vertical-align: middle;">{{ box.weight }}</td>
+                    {% if box.status == 'unplaced' %}
+                        <td style="vertical-align: middle;">virtually placed</td>
+                    {% endif %}
+
+                    {% if box.status == 'placed' %}
+                        <td style="vertical-align: middle;">manually placed</td>
+                    {% endif %}
+
+                    {% if box.status == 'unfit' %}
+                        <td style="vertical-align: middle;">No location available</td>
+                    {% endif %}
+
+                    {% if box.status == 'undetermined' %}
+                        <td style="vertical-align: middle;">undetermined</td>
+                    {% endif %}
+                    {% if box.status == 'damaged' %}
+                        <td style="vertical-align: middle;">damaged</td>
+                    {% endif %}
+                    
+                    <td style="vertical-align: middle;">
+                        <a href="{{ url_for('delete_box', box_id=box.id, config_id=config_id) }}" class="btn btn-danger btn">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>
+{%endblock%}

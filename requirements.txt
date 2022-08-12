@@ -1,0 +1,9 @@
+Flask
+Flask-RESTful
+flask_wtf
+flask_sqlalchemy
+wtforms
+mysql
+mysql-connector
+requests
+pymysql

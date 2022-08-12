@@ -1,0 +1,4 @@
+name;width;height;depth;start_x;start_y;start_z;weight
+;50;50;50;0;0;0;1
+;30;30;30;50;0;0;1
+;50;40;30;0;0;0;1

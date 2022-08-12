@@ -1,0 +1,52 @@
+
+{%extends 'base.html'%}
+
+{%block title %} Report {%endblock%}
+
+{%block header%} Report {%endblock%}
+
+{%block body%} 
+
+<a href="{{ url_for('input_box', config_id=config_id)}}" class="btn btn-primary"> Back</a>
+<a href="{{ url_for('index')}}" class="btn btn-primary">Home</a>
+
+<div class="card-body">
+    <table class="table">
+        <thead>
+            <th>Attribute</th>
+            <th>Value</th>
+        </thead>
+
+        <tbody>
+            <td>Configuration name:</td>
+            <td>{{data.name}}</td>
+        </tbody>
+        <tbody>
+            <td>score (filled rate):</td>
+            <td>{{data.score}}</td>
+        </tbody>
+        <tbody>
+            <td>dimensions (width-depth-height) in cm:</td>
+            <td>{{data.dimensions}}</td>
+        </tbody>
+        <tbody>
+            <td>volume (square cm):</td>
+            <td>{{data.volume}}</td>
+        </tbody>
+        <tbody>
+            <td>number of virtually or manually placed boxes: </td>
+            <td>{{data.nb_placed_boxes}}</td>
+        </tbody>
+        <tbody>
+            <td>number of boxes that have not found a location:</td>
+            <td>{{data.nb_unfit_boxes}}</td>
+        </tbody>
+        <tbody>
+            <td>pre-ordering algorithm:</td>
+            <td>{{data.sorting_algorithm}}</td>
+        </tbody>
+    </table>
+</div>
+
+
+{%endblock%}

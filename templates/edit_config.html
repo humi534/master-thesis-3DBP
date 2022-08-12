@@ -1,0 +1,66 @@
+{%extends 'base.html'%}
+
+{%block title %} Edit config {%endblock%}
+
+{%block header%} Edit a configuration {%endblock%}
+
+{%block body%} 
+    <a href="{{ url_for('index')}}" class="btn btn-primary">Back Home</a>
+    <div class="card-body">
+        <form action="{{ url_for('config_to_box', config_id=config.id) }}" method="POST">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"></div>
+                    </div>
+                    <input type="text" id="name" class="form-control" placeholder="Name" name="name" value="{{config.name}}" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ContainerDimensions">Container Dimensions:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"> </div>
+                    </div>
+                    <input type="text" class="form-control" placeholder="width" name="width_pallet" value="{{config.width_pallet}}">
+                    <input type="text" class="form-control" placeholder="depth" name="depth_pallet" value="{{config.depth_pallet}}">
+                    <input type="text" class="form-control" placeholder="max height" name="max_height_pallet" value="{{config.max_height_pallet}}">
+                </div>
+                <small class="form-text text-muted">format: width(cm)-depth(cm)-max height(cm)</small>
+            </div>
+            <div class="form-group">
+                <label for="sorting_algorithm">Sorting Algorithm</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"></div>
+                    </div>
+                    <select class="custom-select" name="sorting_algorithm">
+                        {% if config.sorting_algorithm == "volume" %}
+                        <option value="volume" selected>Volume</option>
+                        {% else %}
+                        <option value="volume">Volume</option>
+                        {% endif %}
+
+                        {% if config.sorting_algorithm == "surface" %}
+                        <option value="surface" selected>Surface</option>
+                        {% else %}
+                        <option value="surface">Surface</option>
+                        {% endif %}
+
+                        {% if config.sorting_algorithm == "random" %}
+                        <option value="random" selected>Random</option>
+                        {% else %}
+                        <option value="random">Random</option>
+                        {% endif %}
+
+                      </select>
+                </div>
+            </div>
+            
+            <div class="form-group" style="margin-top: 1.5rem;">
+                <button type="submit" class="btn btn-success">Save and next</button>
+            </div>
+        </form>
+    </div>
+{%endblock%}

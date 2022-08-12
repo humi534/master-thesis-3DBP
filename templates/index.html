@@ -1,0 +1,60 @@
+{%extends 'base.html'%}
+
+{% block title %} Master Thesis Project {% endblock %}
+
+{% block header %} Home Page (configurations) {%endblock%}
+
+{% block body %}
+    <a href="{{ url_for('input_config')}}" class="btn btn-primary" style="margin-bottom: 1.3rem;">Add Configuration</a>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Success!</strong> {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif%}
+    {% endwith %}
+
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col" style="text-align:center; vertical-align: middle;">No</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">Name</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">Number of boxes</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">Container Dimensions(cm): width-depth-height</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">Current Configuration</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">Sorting Algorithm</th>
+                <th scope="col" style="text-align:center; vertical-align: middle;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for config in data %}
+                <tr style="white-space: nowrap; text-align:center;">
+                    <th scope="row" style="vertical-align: middle;">{{ loop.index }}</th>
+                    <td style="vertical-align: middle;">{{ config.name }}</td>
+                    <td style="vertical-align: middle;">{{ nb_boxes[loop.index-1] }}</td>
+                    <td style="vertical-align: middle;">{{ config.get_dimensions() }}</td>
+                    {% if config.is_current_config %}
+                    <td style="vertical-align: middle;"><ion-icon size="large" name="checkmark-circle-outline"></ion-icon></td>
+                    {% else %}
+                    <td></td>
+                    <!--
+                    <td style="vertical-align: middle;"><ion-icon size="large" name="close-circle-outline"></ion-icon></td>
+                    -->
+                    {% endif %}
+
+                    <td style="vertical-align: middle;">{{ config.sorting_algorithm }}</td>
+                    <td style="vertical-align: middle;">
+                        <a href="{{ url_for('set_current_config', id=config.id) }}" class="btn btn-secondary btn">Use</a>
+                        <a href="{{ url_for('edit_config', config_id=config.id)}}" class="btn btn-warning btn">Edit</a>
+                        <a href="{{ url_for('delete_config', config_id=config.id) }}" class="btn btn-danger btn" onclick="return confirm('Are you sure delete this configuration ?')">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
